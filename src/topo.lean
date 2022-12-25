@@ -40,3 +40,26 @@ begin
             ... ≤ r : max_le this y_in,
 end 
 
+
+-- If X Y are topological spaces, Y is Hausdorff, f and g are continuous functions from X to Y, 
+-- then the set {x ∈ X : f x = g x} is closed. 
+example {X Y : Type*}[topological_space X][topological_space Y][t2_space Y]{f g : X → Y} :
+continuous f → continuous g → is_closed {x : X | f x = g x} := 
+begin 
+  intros hfcts hgcts,
+  suffices : is_open {x : X | f x ≠ g x}, { rwa ← is_open_compl_iff },
+  rw is_open_iff_forall_mem_open,
+  intros x x_in,
+  rcases t2_separation (x_in) with ⟨U, V, U_open, V_open, fx_in_U, gx_in_V, UdisjV⟩,
+  use (f ⁻¹' U) ∩ (g ⁻¹' V),
+  repeat {split},
+  { -- (f ⁻¹' U) ∩ (g ⁻¹' V) is contained in the set {x : X | f x ≠ g x}
+    intros x' x'_in, 
+    rw set.mem_inter_iff at x'_in,
+    repeat {rw set.mem_preimage at x'_in},
+    exact disjoint.ne_of_mem UdisjV x'_in.left x'_in.right },
+  { -- (f ⁻¹' U) ∩ (g ⁻¹' V) is open
+    exact is_open.inter (is_open.preimage hfcts U_open) (is_open.preimage hgcts V_open) }, 
+    -- x ∈ f⁻¹(U) and x ∈ f⁻¹(V)
+  repeat { rwa set.mem_preimage },
+end
