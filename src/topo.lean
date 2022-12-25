@@ -11,7 +11,6 @@ begin
   intros y y_not_in, 
   change ¬ dist y x < r at y_not_in,
   -- have : dist y x ≥ r := by linarith,
-  -- replace_hyp y_not_in (dist y x ≥ r) (by linarith),
   use [r, r_pos],
   intros z hz,
   change ¬ dist z x < r,
@@ -63,3 +62,6 @@ begin
     -- x ∈ f⁻¹(U) and x ∈ f⁻¹(V)
   repeat { rwa set.mem_preimage },
 end
+
+
+
