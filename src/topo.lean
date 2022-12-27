@@ -53,11 +53,13 @@ begin
   use (f ⁻¹' U) ∩ (g ⁻¹' V),
   repeat {split},
   { -- (f ⁻¹' U) ∩ (g ⁻¹' V) is contained in the set {x : X | f x ≠ g x}
+    show (f ⁻¹' U) ∩ (g ⁻¹' V) ⊆ {x : X | f x ≠ g x},
     intros x' x'_in, 
     rw set.mem_inter_iff at x'_in,
     repeat {rw set.mem_preimage at x'_in},
     exact disjoint.ne_of_mem UdisjV x'_in.left x'_in.right },
   { -- (f ⁻¹' U) ∩ (g ⁻¹' V) is open
+    show is_open ((f ⁻¹' U) ∩ (g ⁻¹' V)),
     exact is_open.inter (is_open.preimage hfcts U_open) (is_open.preimage hgcts V_open) }, 
     -- x ∈ f⁻¹(U) and x ∈ f⁻¹(V)
   repeat { rwa set.mem_preimage },
