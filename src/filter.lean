@@ -96,3 +96,25 @@ end
 example {X Y : Type*}[topological_space X][topological_space Y]{f : X → Y} : 
 continuous f ↔ (∀ (F : filter X) (x : X), filter_converge F x → filter_converge (filter.map f F) (f x)) :=
 sorry 
+
+
+-- It turns out ℱ → x is the same as filter.tendsto id ℱ (nhds x)
+example {X : Type*}[topological_space X]{F : filter X}{x : X} :
+filter_converge F x ↔ filter.tendsto id F (nhds x) := 
+begin
+  have filter_converge_iff_contain_nhds : filter_converge F x ↔ F ≤ (nhds x), -- ℱ ≤ 𝒩(x) means 𝒩(x) ⊆ ℱ
+  { split, 
+    { intros F_to_x N N_nhd, 
+      rcases mem_nhds_iff.mp N_nhd with ⟨U, U_ss_N, U_open, x_in_U⟩, 
+      have U_in_F : U ∈ F := F_to_x U U_open x_in_U, 
+      exact filter.mem_of_superset U_in_F U_ss_N },
+    { intros nhd_in_F U U_open x_in_U,
+      have U_nhd : U ∈ (nhds x) :=  is_open.mem_nhds U_open x_in_U,
+      exact nhd_in_F U_nhd } },
+  rw filter_converge_iff_contain_nhds,
+  unfold filter.tendsto,
+  -- Since f is the identity, f⁻¹(S) = S for every S ⊆ X. So f_*(ℱ) = {S ⊆ X : f⁻¹(S) ∈ ℱ } = ℱ
+  rwa filter.map_id,
+end 
+
+-- As a result of filter_converge_iff_contain_nhds, if 𝒩(x) is an ultrafilter, then it is the only filter that converges to x. 
