@@ -117,4 +117,29 @@ begin
   rwa filter.map_id,
 end 
 
--- As a result of filter_converge_iff_contain_nhds, if 𝒩(x) is an ultrafilter, then it is the only filter that converges to x. 
+-- As a result of filter_converge_iff_contain_nhds, if 𝒩(x) is an ultrafilter, 
+-- then it is the only filter that converges to x. 
+
+
+-- If S ⊆ T, then 𝒫(S) ⊇ 𝒫(T). 
+example {X : Type*}[topological_space X]{S T : set X} : S ⊆ T → filter.principal S ≤ filter.principal T := 
+begin  
+  intros S_ss_T F F_in_PT, -- want to show F ∈ 𝒫(S)
+  have S_ss_F : S ⊆ F :=
+    calc S ⊆ T : S_ss_T 
+       ... ⊆ F : filter.mem_principal.mp F_in_PT,
+  exact filter.mem_principal.mpr S_ss_F,
+end 
+
+-- Conversely, if 𝒫(S) ⊇ 𝒫(T) then S ⊆ T. 
+example {X : Type*}[topological_space X]{S T : set X} : filter.principal S ≤ filter.principal T → S ⊆ T :=
+begin 
+  intro S_le_T,
+  -- Since T ∈ 𝒫(T) ⊆ 𝒫(S), we have T ∈ 𝒫(S), and thus T ⊇ S
+  have T_in_PT : T ∈ filter.principal T := filter.mem_principal_self T,
+  have T_in_PS : T ∈ filter.principal S := filter.le_def.mp S_le_T T T_in_PT,
+  exact filter.mem_principal.mp T_in_PS,
+end 
+
+-- And in mathlib this is filter.principal_mono
+#check @filter.principal_mono
