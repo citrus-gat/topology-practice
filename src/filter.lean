@@ -143,3 +143,20 @@ end
 
 -- And in mathlib this is filter.principal_mono
 #check @filter.principal_mono
+
+
+open filter 
+
+-- f_*(𝒫(S)) = 𝒫(f(S))
+example {X Y : Type*}[topological_space X][topological_space Y]{f : X → Y}{S : set X} : filter.map f (principal S) = principal (f '' S) := 
+begin  
+  -- simp, -- This alone will solve the goal, but let's work out the details 
+  apply filter.ext,             -- We want to show for all set T, T ∈ f_*(𝒫(S)) ↔ T ∈ 𝒫(f(S))
+  intro T,          
+  rw [mem_map, mem_principal],  -- But T ∈ f_*(𝒫(S)) means f⁻¹(T) ∈ 𝒫(S) and f⁻¹(T) ⊇ S 
+  rw ← set.image_subset_iff,    -- But f⁻¹(T) ⊇ S exactly when T ⊇ S
+  rw ← mem_principal,    -- So we can conclude T ∈ 𝒫(S)
+end 
+
+-- In mathlib it is filter.map_principal
+#check @filter.map_principal 
